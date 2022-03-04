@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">mjuBank</string>
+
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">财富</string>
+    <string name="title_notifications">个人</string>
+
+    <string name="login_account">帐号</string>
+    <string name="login_passwd">密码</string>
+    <string name="login_account_hint">请输入手机号</string>
+    <string name="login_passwd_hint">请输入密码</string>
+    <string name="login_protocol">同意协议</string>
+    <string name="login_button">登录</string>
+
+</resources>

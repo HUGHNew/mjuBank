@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+    <TextView
+        android:id="@+id/account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/account_headline"
+        app:layout_constraintStart_toStartOf="parent"
+
+        android:layout_marginStart="@dimen/field_start_margin"
+        android:textSize="@dimen/font_size"
+        android:text="@string/login_account"/>
+
+    <TextView
+        android:id="@+id/passwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/field_start_margin"
+        android:layout_marginTop="@dimen/field_start_margin"
+
+        android:text="@string/login_passwd"
+        android:textSize="@dimen/font_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account" />
+
+    <EditText
+        android:id="@+id/account_editor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/login_account_hint"
+        android:autofillHints="phone"
+        android:gravity="center"
+
+        android:inputType="phone"
+        android:layout_marginEnd="@dimen/field_start_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/account"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/account"
+        app:layout_constraintTop_toTopOf="@id/account" />
+    <EditText
+        android:id="@+id/passwd_editor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/login_passwd_hint"
+        android:autofillHints="password"
+        android:gravity="center"
+
+        android:inputType="textPassword"
+        android:layout_marginEnd="@dimen/field_start_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/passwd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/passwd"
+        app:layout_constraintTop_toTopOf="@id/passwd"/>
+
+    <CheckBox
+        android:id="@+id/protocol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/login_protocol"
+        android:textSize="@dimen/font_size_middle"
+
+        android:layout_marginTop="@dimen/field_start_margin"
+        android:layout_marginStart="@dimen/field_start_margin"
+        app:layout_constraintEnd_toStartOf="@id/vert_half"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwd" />
+    <Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_size"
+        android:text="@string/login_button"
+        android:layout_marginTop="@dimen/field_start_margin"
+        app:layout_constraintTop_toBottomOf="@id/protocol"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/account_headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3"
+        tools:viewBindingIgnore="true"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vert_half"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        tools:viewBindingIgnore="true"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
