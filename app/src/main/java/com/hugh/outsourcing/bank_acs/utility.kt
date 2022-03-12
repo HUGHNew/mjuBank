@@ -3,6 +3,7 @@ package com.hugh.outsourcing.bank_acs
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
+import androidx.core.content.edit
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 fun BottomNavigationView.getItemPosition(pos : Int):Int =  menu.getItem(pos).itemId
@@ -24,9 +25,8 @@ fun Activity.readInfo(){
 }
 fun Activity.saveInfo(){
     if(Info.status!=Info.LoginStatus.NO){
-        getSharedPreferences(Info.shared,Context.MODE_PRIVATE).edit().apply{
+        getSharedPreferences(Info.shared,Context.MODE_PRIVATE).edit{
             putString("phone",Info.phone)
-            apply()
         }
     }
 }

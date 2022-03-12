@@ -4,6 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="field_start_margin">24dp</dimen>
     <dimen name="large_margin">48dp</dimen>
+    <dimen name="nav_margin">56dp</dimen>
+    <dimen name="double_large_margin">96dp</dimen>
     <dimen name="font_size">24sp</dimen>
     <dimen name="font_size_middle">18sp</dimen>
 </resources>

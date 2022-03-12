@@ -1,6 +1,5 @@
 package com.hugh.outsourcing.bank_acs
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.hugh.outsourcing.bank_acs.databinding.ActivityLoginBinding
 
@@ -30,6 +29,7 @@ class LoginActivity : BaseActivity() {
             }
         }
     }
+
     private fun login():Boolean{
         L.w(tag,"phone number:${binding.accountEditor.text}")
         if (binding.accountEditor.text.isNullOrEmpty()){
@@ -46,6 +46,11 @@ class LoginActivity : BaseActivity() {
             return false
         }
         // check user and get info
+        // suck as person info
+        // TODO("api required to init person")
+        Info.person = Person("张三","2021/3/15") // stub
+        Info.phone = binding.accountEditor.text.toString()
+
         Info.status = Info.LoginStatus.UNREAL
         return true
     }

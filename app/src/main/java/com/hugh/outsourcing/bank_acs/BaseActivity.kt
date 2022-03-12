@@ -12,6 +12,7 @@ open class BaseActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if(activityCount == 0){
             readInfo()
+            L.d("Info Action","read info from sharedReference phone:${Info.phone}")
         }
         ++activityCount
         supportActionBar?.hide()
@@ -22,6 +23,7 @@ open class BaseActivity:AppCompatActivity() {
         --activityCount
         if(activityCount == 0){
             saveInfo()
+            L.d("Info Action","save info to sharedReference")
         }
     }
 }

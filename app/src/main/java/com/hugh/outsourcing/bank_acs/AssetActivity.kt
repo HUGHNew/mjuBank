@@ -17,6 +17,7 @@ class AssetActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
+        binding.assetItems.dataFetch(this)
         navViewSetting()
     }
     private fun navViewSetting(){

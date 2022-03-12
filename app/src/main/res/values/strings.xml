@@ -13,4 +13,22 @@
     <string name="login_protocol">同意协议</string>
     <string name="login_button">登录</string>
 
+    <string name="auth_id">身份证号:</string>
+    <string name="auth_id_hint">请输入身份证号</string>
+    <string name="auth_date">请选择身份证到期时间</string>
+    <string name="auth_confirm">提交</string>
+
+    <string name="home_login_hint">当前未登录</string>
+
+    <string name="asset_show">资产:</string>
+    <string name="asset_purchased">已购买产品</string>
+
+    <string name="detail_header_title">化利率</string>
+    <string name="detail_header_prod">产品名称</string>
+    <string name="detail_header_risk">风险等级</string>
+    <string name="detail_header_cal">结算方式</string>
+
+    <string name="detail_due_date">到期日：</string>
+    <string name="detail_purchase_hint">购买金额(最低-最高)</string>
+    <string name="detail_confirm">确定</string>
 </resources>
