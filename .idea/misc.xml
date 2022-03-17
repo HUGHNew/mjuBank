@@ -14,6 +14,9 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2857789855072464" />
         <entry key="app/src/main/res/layout/activity_person.xml" value="0.2857789855072464" />
+        <entry key="app/src/main/res/layout/asset_fragment.xml" value="0.21920289855072464" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.21920289855072464" />
+        <entry key="app/src/main/res/layout/user_fragment.xml" value="0.21920289855072464" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.31302083333333336" />
       </map>
     </option>

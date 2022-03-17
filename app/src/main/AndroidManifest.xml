@@ -11,22 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MjuBank">
         <activity
-            android:name=".DetailHeader"
-            android:exported="false" />
-        <activity
             android:name=".DetailActivity"
             android:exported="false" />
         <activity
             android:name=".AuthActivity"
             android:exported="false" />
-        <activity
-            android:name=".PersonActivity"
-            android:exported="false"
-            android:launchMode="singleTask" />
-        <activity
-            android:name=".AssetActivity"
-            android:exported="false"
-            android:launchMode="singleTask" />
         <activity
             android:name=".LoginActivity"
             android:exported="false"

@@ -19,6 +19,7 @@
     <string name="auth_confirm">提交</string>
 
     <string name="home_login_hint">当前未登录</string>
+    <string name="home_prod">产品列表</string>
 
     <string name="asset_show">资产:</string>
     <string name="asset_purchased">已购买产品</string>

@@ -12,14 +12,8 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
     }
-    fun setContent(name:String,rate:Double,unit:String,risk:String,cal:String){
-        binding.header.product.text=name
-        (unit+resources.getString(R.string.detail_header_title)).also { binding.header.date.text = it }
-        "$rate%".also { binding.header.rate.text = it }
-        binding.header.riskLevel.text=risk
-        binding.header.calMethod.text=cal
-    }
+    fun setContent(name:String,rate:Double,unit:String,risk:String,cal:String) =
+        binding.header.setContent(name, rate, unit, risk, cal)
     fun addLimiter(min:Int,max:Int){
-
     }
 }
