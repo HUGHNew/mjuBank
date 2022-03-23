@@ -1,7 +1,7 @@
-package com.hugh.outsourcing.bank_acs
+package com.hugh.outsourcing.bank_acs.vms
 
 import androidx.lifecycle.ViewModel
 
 class HomeViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
 }

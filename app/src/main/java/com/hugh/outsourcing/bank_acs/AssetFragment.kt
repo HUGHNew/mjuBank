@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
+import com.hugh.outsourcing.bank_acs.vms.AssetViewModel
 
 class AssetFragment : Fragment() {
 

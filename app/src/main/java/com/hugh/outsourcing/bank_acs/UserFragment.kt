@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hugh.outsourcing.bank_acs.databinding.UserFragmentBinding
+import com.hugh.outsourcing.bank_acs.vms.UserViewModel
 
 class UserFragment : Fragment() {
 

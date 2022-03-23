@@ -1,20 +1,26 @@
 package com.hugh.outsourcing.bank_acs
 
-import android.app.KeyguardManager
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hugh.outsourcing.bank_acs.databinding.ActivityMainBinding
+import com.hugh.outsourcing.bank_acs.vms.MainViewModel
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
+
     private var current = R.id.navigation_home
     companion object{
         const val tag = "MainActivity"
         const val passwd = 1
+        // promise use this obj when MainActivity alive
+        @SuppressLint("StaticFieldLeak")
+        var mMainContext: Context? = null
+        val gson = com.google.gson.Gson()
     }
     // viewModel is better
 
@@ -23,12 +29,15 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setContentView(binding.root)
+        mMainContext = this
         setMainFragment()
         navViewSetting()
     }
     private fun setMainFragment(){
         val trans = supportFragmentManager.beginTransaction()
-        trans.add(R.id.frame,HomeFragment.newInstance())
+        trans.add(R.id.frame,HomeFragment.newInstance(viewModel.products))
+        // get data
+        viewModel.products = dataStub() as MutableList<Pair<String, String>>
         trans.commit()
     }
     private fun navigation(fragment:Fragment){
@@ -43,14 +52,10 @@ class MainActivity : BaseActivity() {
             if(it.itemId==current) {
                 L.d(tag,"click current fragment again")
                 return@setOnItemSelectedListener true
-            }else{
-                val mKeyGuard = getSystemService(KeyguardManager::class.java)
-                val intent = mKeyGuard.createConfirmDeviceCredentialIntent(null,null)
-                intent?.let {itt -> startActivityForResult(itt, passwd) }
             }
             when(it.itemId){
                 R.id.navigation_home -> {
-                    navigation(HomeFragment.newInstance())
+                    navigation(HomeFragment.newInstance(viewModel.products))
                     L.d(tag,"goto home")
                 }
                 R.id.navigation_dashboard -> {
@@ -90,6 +95,8 @@ class MainActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        when(requestCode){
+            passwd->{}
+        }
     }
 }

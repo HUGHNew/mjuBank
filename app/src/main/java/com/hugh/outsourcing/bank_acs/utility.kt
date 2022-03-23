@@ -1,12 +1,20 @@
 package com.hugh.outsourcing.bank_acs
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.core.content.edit
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+// region UI Partition
 fun BottomNavigationView.getItemPosition(pos : Int):Int =  menu.getItem(pos).itemId
+
+fun BaseActivity.startPasswdValidation(title:String?=null,desc:String?=null){
+    val mKeyGuard = getSystemService(KeyguardManager::class.java)
+    val intent = mKeyGuard.createConfirmDeviceCredentialIntent(title,desc)
+    intent?.let {itt -> startActivityForResult(itt, MainActivity.passwd) }
+}
 
 fun Context.showToast(msg:String,longTime:Boolean = false){
     Toast.makeText(this,msg,
@@ -30,3 +38,4 @@ fun Activity.saveInfo(){
         }
     }
 }
+// endregion

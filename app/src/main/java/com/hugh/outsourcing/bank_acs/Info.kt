@@ -1,6 +1,6 @@
 package com.hugh.outsourcing.bank_acs
 
-object Info{
+object Info {
     const val shared = "Info"
     enum class LoginStatus{
         NO,UNREAL,FULL

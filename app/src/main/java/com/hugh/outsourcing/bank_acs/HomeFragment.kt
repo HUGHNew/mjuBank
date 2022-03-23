@@ -7,12 +7,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
+import com.hugh.outsourcing.bank_acs.vms.HomeViewModel
 
 class HomeFragment : Fragment() {
-
+    private lateinit var items:List<Pair<String,String>>
     companion object {
-        fun newInstance() = HomeFragment()
+        fun newInstance(args:List<Pair<String,String>>):HomeFragment{
+            return HomeFragment().apply {
+                items = args
+            }
+        }
+        const val Tag = "HomeFragment"
     }
 
     private lateinit var viewModel: HomeViewModel
@@ -44,7 +51,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun initialization(){
-        context?.let { binding.items.dataFetch(it) }
+        L.d(Tag,"load data to recycler")
+        context?.let {
+            binding.items.layoutManager = LinearLayoutManager(it)
+            binding.items.adapter = ListItemAdapter(items)
+        }
         checkLoginStatus()
         binding.loginButton.setOnClickListener {
             startActivity(Intent(context,LoginActivity::class.java))
