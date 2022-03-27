@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import com.hugh.outsourcing.bank_acs.databinding.UserFragmentBinding
 import com.hugh.outsourcing.bank_acs.vms.UserViewModel
 
-class UserFragment : Fragment() {
+class UserFragment(val person: Person) : Fragment() {
 
     companion object {
-        fun newInstance() = UserFragment()
+        fun newInstance(person: Person) = UserFragment(person)
         const val tag = "UserFragment"
         const val GET_ID_DUE = 1
     }
@@ -23,7 +23,6 @@ class UserFragment : Fragment() {
 
     private var _binding: UserFragmentBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -41,13 +40,12 @@ class UserFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        // TODO: Use the ViewModel
     }
     private fun initialization(){
         infoLoad()
     }
     private fun infoLoad(){
-        binding.name.text = Info.phone!! // last 4 number
+        binding.name.text = person.name // last 4 number
         setRealInfo()
         binding.auth.setOnClickListener {
             startActivityForResult(Intent(context,AuthActivity::class.java), GET_ID_DUE)
@@ -55,10 +53,10 @@ class UserFragment : Fragment() {
     }
 
     private fun setRealInfo(){
-        if (Info.person.realName.isEmpty()){
+        if (person.realName.isEmpty()){
             binding.auth.text = "尚未实名认证 点击可添加实名信息"
         }else{
-            binding.auth.text = "已实名\n${Info.person.realName}到期(点击可修改)"
+            binding.auth.text = "已实名\n${person.realName}到期(点击可修改)"
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -67,7 +65,7 @@ class UserFragment : Fragment() {
             GET_ID_DUE ->{
                 if(resultCode== Activity.RESULT_OK){
                     data?.let {
-                        Info.person.realName = it.getStringExtra("id").toString()
+                        person.realName = it.getStringExtra("id").toString()
                         setRealInfo()
                     }
                 }

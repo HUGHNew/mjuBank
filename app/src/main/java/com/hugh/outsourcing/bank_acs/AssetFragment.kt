@@ -6,13 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
 import com.hugh.outsourcing.bank_acs.vms.AssetViewModel
 
-class AssetFragment : Fragment() {
+class AssetFragment(private val assets:List<Pair<String,String>>) : Fragment() {
 
     companion object {
-        fun newInstance() = AssetFragment()
+        fun newInstance(items:List<Pair<String,String>>) = AssetFragment(items)
     }
 
     private lateinit var viewModel: AssetViewModel
@@ -38,7 +39,12 @@ class AssetFragment : Fragment() {
         // TODO: Use the ViewModel
     }
     private fun initialization(){
-        context?.let { binding.assetItems.dataFetch(it) }
+        context?.let {
+            binding.assetItems.apply {
+                layoutManager = LinearLayoutManager(it)
+                adapter = ListItemAdapter(assets)
+            }
+        }
     }
 
 }

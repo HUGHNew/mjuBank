@@ -1,7 +1,5 @@
 package com.hugh.outsourcing.bank_acs.service
 
-import com.google.gson.reflect.TypeToken
-
 class Service(val id:Int,private val params:Param?) {
     inner class Param(private val areas:List<String>){
         fun allow(area: String):Boolean{

@@ -10,10 +10,6 @@ open class BaseActivity:AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(activityCount == 0){
-            readInfo()
-            L.d("Info Action","read info from sharedReference phone:${Info.phone}")
-        }
         ++activityCount
         supportActionBar?.hide()
     }
@@ -21,9 +17,5 @@ open class BaseActivity:AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         --activityCount
-        if(activityCount == 0){
-            saveInfo()
-            L.d("Info Action","save info to sharedReference")
-        }
     }
 }

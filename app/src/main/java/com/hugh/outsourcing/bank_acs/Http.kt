@@ -28,7 +28,14 @@ object Http {
         httpd.newCall(req).enqueue(this)
     // region directly API
 //    TODO API changed
-//    fun getAllProducts()
+    fun getAllProducts(token:String,callback: Callback){
+        callback.queue(
+            tokenBuilder(token)
+                .url(url(all_prods))
+                .get()
+                .build()
+        )
+    }
     fun getProduct(id: String,token:String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
@@ -77,10 +84,4 @@ object Http {
         }.toString().toRequestBody(Media)
     }
     // endregion
-}
-
-fun main() {
-    val id = "12345678910"
-    val passwd = "123"
-    val payload = Http.getLoginPayload(id,passwd)
 }

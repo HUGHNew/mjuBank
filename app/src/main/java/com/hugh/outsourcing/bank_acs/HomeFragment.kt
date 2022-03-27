@@ -11,13 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
 import com.hugh.outsourcing.bank_acs.vms.HomeViewModel
 
-class HomeFragment : Fragment() {
-    private lateinit var items:List<Pair<String,String>>
+class HomeFragment(private val items:List<Pair<String,String>>) : Fragment() {
     companion object {
         fun newInstance(args:List<Pair<String,String>>):HomeFragment{
-            return HomeFragment().apply {
-                items = args
-            }
+            return HomeFragment(args)
         }
         const val Tag = "HomeFragment"
     }
@@ -53,8 +50,10 @@ class HomeFragment : Fragment() {
     private fun initialization(){
         L.d(Tag,"load data to recycler")
         context?.let {
-            binding.items.layoutManager = LinearLayoutManager(it)
-            binding.items.adapter = ListItemAdapter(items)
+            binding.items.apply {
+                layoutManager = LinearLayoutManager(it)
+                adapter = ListItemAdapter(items)
+            }
         }
         checkLoginStatus()
         binding.loginButton.setOnClickListener {
@@ -62,8 +61,6 @@ class HomeFragment : Fragment() {
         }
     }
     private fun checkLoginStatus(){
-        if(Info.status!=Info.LoginStatus.NO){
-            binding.loginButton.visibility= View.INVISIBLE
-        }
+        binding.loginButton.visibility= View.INVISIBLE
     }
 }

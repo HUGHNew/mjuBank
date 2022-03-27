@@ -6,6 +6,9 @@ import android.content.Context
 import android.widget.Toast
 import androidx.core.content.edit
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.hugh.outsourcing.bank_acs.service.Asset
+import com.hugh.outsourcing.bank_acs.service.Product
+import com.hugh.outsourcing.bank_acs.service.User
 
 // region UI Partition
 fun BottomNavigationView.getItemPosition(pos : Int):Int =  menu.getItem(pos).itemId
@@ -32,20 +35,10 @@ fun Activity.savePhone(number:String){
         putString("phone",number)
     }
 }
-fun Activity.readInfo(){
-    if(!Info.init){ // need init
-        Info.init = true
-        Info.checked = true
-        getSharedPreferences(Info.shared,Context.MODE_PRIVATE).apply {
-            Info.phone = getString("phone",null)
-        }
-    }
-}
-fun Activity.saveInfo(){
-    if(Info.status!=Info.LoginStatus.NO){
-        getSharedPreferences(Info.shared,Context.MODE_PRIVATE).edit{
-            putString("phone",Info.phone)
-        }
-    }
-}
+// endregion
+
+// region classes
+fun User.toPerson():Person = Person(name,validity)
+fun Product.simplify():Pair<String,String> = name to surplus.toString()
+fun Asset.simplify():Pair<String,String> = productName to purchaseDate
 // endregion

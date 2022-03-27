@@ -1,5 +1,6 @@
 package com.hugh.outsourcing.bank_acs
 
+import android.content.Intent
 import android.os.Bundle
 import com.hugh.outsourcing.bank_acs.databinding.ActivityLoginBinding
 import okhttp3.Call
@@ -24,6 +25,12 @@ class LoginActivity : BaseActivity() {
             putExtra("user",data)
         }
     }
+    private fun genBundle(token:String,data:String):Bundle{
+        return Bundle().apply {
+            putString("token",token)
+            putString("user",data)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +50,6 @@ class LoginActivity : BaseActivity() {
 
         binding.login.setOnClickListener {
             if(login()){
-                setResult(RESULT_OK)
                 finish()
             }
         }
@@ -91,12 +97,15 @@ class LoginActivity : BaseActivity() {
                     }
                 }else{
                     savePhone(binding.accountEditor.text.toString())
-
-                    intentResult(token,body.get("data").toString())
+//                    intentResult(token,body.get("data").toString())
+                    runOnUiThread {
+                        val intent = Intent(this@LoginActivity,MainActivity::class.java)
+                        startActivity(intent,genBundle(token,body.get("data").toString()))
+                    }
                     L.d(tag,body.get("data").toString())
                 }
             }
         })
-        return true
+        return false
     }
 }
