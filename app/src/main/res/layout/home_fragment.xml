@@ -10,6 +10,7 @@
         android:id="@+id/login_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_round"
 
         android:layout_marginTop="@dimen/large_margin"
         android:layout_marginStart="@dimen/field_start_margin"

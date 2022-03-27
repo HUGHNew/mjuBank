@@ -1,31 +1,35 @@
 package com.hugh.outsourcing.bank_acs
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
 
 object Http {
     // region paths
     private const val ip="http://150.158.77.38:12345"
     private const val all_prods = "/product/allProducts"
     private const val purchase = "/product/purchase"
-    private const val loginPath = "/product/purchase"
+    private const val loginPath = "/user/login"
     private const val history = "/product/purchaseHistory"
     private fun product(id:String) = "/product/${id}"
-    private fun url(path:String) = "$ip/$path"
+    private fun url(path:String) = "$ip$path"
+    private val Media = "application/json; charset=utf-8".toMediaTypeOrNull()
     // endregion
     private val httpd = OkHttpClient()
 
-    private inline fun tokenBuilder(token:String):Request.Builder =
+    private fun tokenBuilder(token:String):Request.Builder =
         Request.Builder()
             .addHeader("cache-control", "no-cache")
+            .addHeader("Content-Type","application/json")
             .addHeader("Authorization" , "Bearer $token")
-    private inline fun okhttp3.Callback.queue(req:Request) =
+    private fun Callback.queue(req:Request) =
         httpd.newCall(req).enqueue(this)
     // region directly API
 //    TODO API changed
 //    fun getAllProducts()
-    fun getProduct(id: String,token:String,callback: okhttp3.Callback){
+    fun getProduct(id: String,token:String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(url(product(id)))
@@ -33,7 +37,7 @@ object Http {
                 .build()
         )
     }
-    fun purchaseProduct(token:String,payload:okhttp3.FormBody,callback:okhttp3.Callback){
+    fun purchaseProduct(token:String, payload: RequestBody, callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(url(purchase))
@@ -41,7 +45,7 @@ object Http {
                 .build()
         )
     }
-    fun purchaseHistory(token: String,callback:okhttp3.Callback){
+    fun purchaseHistory(token: String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(history)
@@ -49,9 +53,10 @@ object Http {
                 .build()
         )
     }
-    fun login(payload:okhttp3.FormBody,callback:okhttp3.Callback){
+    fun login(payload: RequestBody, callback: Callback){
         callback.queue(
             Request.Builder()
+                .addHeader("Content-Type","application/json; charset=utf-8")
                 .url(url(loginPath))
                 .post(payload)
                 .build()
@@ -59,17 +64,23 @@ object Http {
     }
     // endregion
     // region helper functions
-    fun getLoginPayload(id:String,passwd:String):okhttp3.FormBody{
-        return okhttp3.FormBody.Builder()
-            .add("id",id)
-            .add("password",passwd)
-            .build()
+    fun getLoginPayload(id:String,passwd:String): RequestBody{
+        return JSONObject().apply {
+            put("id",id)
+            put("password",passwd)
+        }.toString().toRequestBody(Media)
     }
-    fun getProductPayload(id:String,amount:Int):okhttp3.FormBody{
-        return okhttp3.FormBody.Builder()
-            .add("productId",id)
-            .add("amount",amount.toString())
-            .build()
+    fun getProductPayload(id:String,amount:Int): RequestBody{
+        return JSONObject().apply {
+            put("productId",id)
+            put("amount",amount.toString())
+        }.toString().toRequestBody(Media)
     }
     // endregion
+}
+
+fun main() {
+    val id = "12345678910"
+    val passwd = "123"
+    val payload = Http.getLoginPayload(id,passwd)
 }

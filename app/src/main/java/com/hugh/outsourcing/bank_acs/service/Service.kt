@@ -26,10 +26,3 @@ class Service(val id:Int,private val params:Param?) {
         return params?.let { "$id : $it" }?:"$id"
     }
 }
-fun main(){
-    val json = "[{\"id\":5,\"params\":{\"areas\":[\"四川\",\"湖南\"]}},{\"id\":1}]"
-    val gson = com.google.gson.Gson()
-    val type = object : TypeToken<List<Service>>(){}.type
-    val services = gson.fromJson<List<Service>>(json,type)
-    println(services.joinToString { it.toString() })
-}

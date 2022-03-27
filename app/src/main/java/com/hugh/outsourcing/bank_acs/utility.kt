@@ -22,6 +22,16 @@ fun Context.showToast(msg:String,longTime:Boolean = false){
         else Toast.LENGTH_SHORT
     ).show()
 }
+fun Activity.readPhone():String?{
+    return with(getSharedPreferences(LoginActivity.shared,Context.MODE_PRIVATE)){
+        getString("phone",null)
+    }
+}
+fun Activity.savePhone(number:String){
+    getSharedPreferences(LoginActivity.shared,Context.MODE_PRIVATE).edit{
+        putString("phone",number)
+    }
+}
 fun Activity.readInfo(){
     if(!Info.init){ // need init
         Info.init = true

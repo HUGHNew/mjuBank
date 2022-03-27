@@ -1,12 +1,14 @@
 package com.hugh.outsourcing.bank_acs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hugh.outsourcing.bank_acs.databinding.ActivityMainBinding
+import com.hugh.outsourcing.bank_acs.service.User
 import com.hugh.outsourcing.bank_acs.vms.MainViewModel
 
 class MainActivity : BaseActivity() {
@@ -17,10 +19,15 @@ class MainActivity : BaseActivity() {
     companion object{
         const val tag = "MainActivity"
         const val passwd = 1
+        const val login  = 2
         // promise use this obj when MainActivity alive
         @SuppressLint("StaticFieldLeak")
         var mMainContext: Context? = null
         val gson = com.google.gson.Gson()
+        enum class LoginStatus{
+            NO,UNREAL,FULL
+        }
+        var status = LoginStatus.NO
     }
     // viewModel is better
 
@@ -35,7 +42,8 @@ class MainActivity : BaseActivity() {
     }
     private fun setMainFragment(){
         val trans = supportFragmentManager.beginTransaction()
-        trans.add(R.id.frame,HomeFragment.newInstance(viewModel.products))
+//        trans.add(R.id.frame,HomeFragment.newInstance(viewModel.products))
+        trans.add(R.id.frame,HomeFragment.newInstance(mutableListOf()))
         // get data
         viewModel.products = dataStub() as MutableList<Pair<String, String>>
         trans.commit()
@@ -60,13 +68,13 @@ class MainActivity : BaseActivity() {
                 }
                 R.id.navigation_dashboard -> {
                     L.d(tag,"Jump to dashboard")
-                    when(Info.status){
-                        Info.LoginStatus.NO -> {
+                    when(status){
+                        LoginStatus.NO -> {
                             L.d(tag,"not login yet")
-                            startActivity(Intent(this,LoginActivity::class.java))
+                            startActivityForResult(Intent(this,LoginActivity::class.java),login)
                             return@setOnItemSelectedListener false
                         }
-                        Info.LoginStatus.UNREAL,Info.LoginStatus.FULL ->{
+                        LoginStatus.UNREAL,LoginStatus.FULL ->{
                             navigation(AssetFragment.newInstance())
                             L.d(tag,"goto asset")
                         }
@@ -74,13 +82,13 @@ class MainActivity : BaseActivity() {
                 }
                 R.id.navigation_person -> {
                     L.d(tag,"Jump to personal page")
-                    when(Info.status){
-                        Info.LoginStatus.NO -> {
+                    when(status){
+                        LoginStatus.NO -> {
                             L.d(tag,"not login yet")
-                            startActivity(Intent(this,LoginActivity::class.java))
+                            startActivityForResult(Intent(this,LoginActivity::class.java),login)
                             return@setOnItemSelectedListener false
                         }
-                        Info.LoginStatus.UNREAL,Info.LoginStatus.FULL ->{
+                        LoginStatus.UNREAL,LoginStatus.FULL ->{
                             navigation(UserFragment.newInstance())
                             L.d(tag,"goto user")
                         }
@@ -97,6 +105,16 @@ class MainActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             passwd->{}
+            login->{
+                if(resultCode==Activity.RESULT_OK){
+                    data?.let {
+                        L.d(tag,"login finish")
+                        status = LoginStatus.FULL
+                        viewModel.user = gson.fromJson(it.getStringExtra("data"),User::class.java)
+                        viewModel.token = it.getStringExtra("token")!!
+                    }
+                }
+            }
         }
     }
 }

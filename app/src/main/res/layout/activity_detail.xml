@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/marginTop"
         android:layout_marginStart="@dimen/field_start_margin"
-        android:background="@color/gray"
+        android:background="@drawable/header"
         android:layout_marginEnd="@dimen/field_start_margin"/>
     <TextView
         android:id="@+id/due_prefix"
@@ -42,11 +42,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:inputType="numberDecimal"
-        android:hint="@string/detail_purchase_hint"/>
+        android:hint="@string/detail_purchase_hint"
+        android:autofillHints=""/>
     <Button
         android:id="@+id/confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_round"
         android:layout_margin="@dimen/large_margin"
         app:layout_constraintTop_toBottomOf="@id/input"
         app:layout_constraintStart_toStartOf="parent"
