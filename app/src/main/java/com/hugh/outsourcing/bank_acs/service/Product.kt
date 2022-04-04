@@ -2,6 +2,7 @@ package com.hugh.outsourcing.bank_acs.service
 
 import com.hugh.outsourcing.bank_acs.*
 import java.io.Serializable
+import kotlin.math.max
 
 
 class Product(val id:String, val name:String, val period:Int, val annual:Int,
@@ -31,6 +32,7 @@ class Product(val id:String, val name:String, val period:Int, val annual:Int,
         return true
     }
     private fun purchaseStatus(amount: Int):Int{
+        L.d("Purchase","$amount $minAmount-$maxAmount~$incAmount")
         if(!available)return 4
         if(amount !in minAmount..maxAmount)return 1
         if(amount + already > dailyAmount)return 2

@@ -32,4 +32,7 @@
     <string name="detail_due_date">到期日：</string>
     <string name="detail_purchase_hint">购买金额(最低-最高)</string>
     <string name="detail_confirm">确定</string>
+
+    <string name="dialog_amount">金额: %1$d</string>
+    <string name="dialog_due">%1$s到期</string>
 </resources>

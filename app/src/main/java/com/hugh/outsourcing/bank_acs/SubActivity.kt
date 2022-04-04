@@ -23,5 +23,9 @@ class SubActivity : AppCompatActivity(){
             startActivity(intent)
             finish()
         }
+        findViewById<Button>(R.id.dialog).setOnClickListener {
+            val d = AssetDialog(this,"一月存款","amount!!!","2022-03-15 19:13:52")
+            d.show()
+        }
     }
 }

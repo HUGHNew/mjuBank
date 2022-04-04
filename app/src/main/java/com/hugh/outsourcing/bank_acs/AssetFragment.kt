@@ -11,10 +11,10 @@ import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Asset
 import com.hugh.outsourcing.bank_acs.vms.AssetViewModel
 
-class AssetFragment(private val assets:List<Asset>) : Fragment() {
+class AssetFragment(private val assets:List<Asset>,private val balance:Int) : Fragment() {
 
     companion object {
-        fun newInstance(items:List<Asset>) = AssetFragment(items)
+        fun newInstance(items:List<Asset>,balance:Int) = AssetFragment(items,balance)
     }
 
     private lateinit var viewModel: AssetViewModel
@@ -46,12 +46,11 @@ class AssetFragment(private val assets:List<Asset>) : Fragment() {
                 adapter = AssetsAdapter(assets)
             }
         }
+        binding.assetShow.text = "资产: $balance"
         binding.swiper.setOnRefreshListener {
-            (activity as MainActivity?)?.let {
-                it.updateAssets {
-                    binding.assetItems.adapter?.notifyDataSetChanged()
-                }
-            }
+            (activity as MainActivity).updateAssets()
+            binding.assetItems.adapter?.notifyDataSetChanged()
+            binding.swiper.isRefreshing = false
         }
     }
 

@@ -26,25 +26,14 @@ class AssetsAdapter(private val items:List<Asset>):
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.title.text = item.productName
-        holder.desc.text = "购买时间: ${item.purchaseDate}%"
+        holder.desc.text = "购买时间: ${item.purchaseDate}"
         holder.itemView.setOnClickListener {
-//            val intent = Intent(it.context,DetailActivity::class.java).apply {
-//                putExtra("type",1) // asset
-//                putExtra("asset",item)
-//            }
-//            it.context.startActivity(intent)
             // todo dialog for asset
-            val ad = Dialog(MainActivity.mMainContext!!).apply {
-                requestWindowFeature(Window.FEATURE_NO_TITLE)
-                setCancelable(false)
-                setContentView(R.layout.dialog_asset)
-                findViewById<TextView>(R.id.title).text = item.productName
-                findViewById<TextView>(R.id.amount).text = "金额: ${item.amount}"
-                findViewById<TextView>(R.id.due).text = "到期时间: ${item.purchaseDate}"
-                findViewById<Button>(R.id.ok).setOnClickListener {
-                    dismiss()
-                }
-            }.show()
+            val ctx = MainActivity.mMainContext!!
+            AssetDialog(ctx,item.productName,
+                ctx.resources.getString(R.string.dialog_amount,item.amount),
+                ctx.resources.getString(R.string.dialog_due,item.purchaseDate)
+            ).show()
         }
     }
 

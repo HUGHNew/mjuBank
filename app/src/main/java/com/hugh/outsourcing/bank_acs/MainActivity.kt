@@ -1,9 +1,11 @@
 package com.hugh.outsourcing.bank_acs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.reflect.TypeToken
@@ -12,14 +14,17 @@ import com.hugh.outsourcing.bank_acs.service.Asset
 import com.hugh.outsourcing.bank_acs.service.Product
 import com.hugh.outsourcing.bank_acs.service.User
 import com.hugh.outsourcing.bank_acs.vms.MainViewModel
-import okhttp3.Call
-import okhttp3.Response
 import org.json.JSONObject
-import java.io.IOException
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
+    val coster = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if (result.resultCode == Activity.RESULT_OK){
+            val cost = result.data?.getIntExtra("cost",0)?:0
+            viewModel.user.balance -= cost
+        }
+    }
 
     private var current = R.id.navigation_home
     companion object{
@@ -31,28 +36,22 @@ class MainActivity : BaseActivity() {
         val gson = com.google.gson.Gson()
     }
     // region get data
-    private fun <T> getDataBase(token:String, failure:String, error:String,
-                                assign:(List<T>)->Unit){
-        Http.getAllProducts(token,object :okhttp3.Callback{
-            override fun onFailure(call: Call, e: IOException) {
+    private inline fun <reified T> getDataBase(token:String, failure:String, error:String,
+                                               crossinline assign:(List<T>)->Unit){
+        Http.getAllProducts(token,{response ->
+            val body = JSONObject(response.body!!.string())
+            val code = body.getInt("code")
+            if(code!=200){
                 runOnUiThread {
-                    this@MainActivity.showToast(failure)
+                    this@MainActivity.showToast(error)
                 }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val body = JSONObject(response.body!!.string())
-                val code = body.getInt("code")
-                if(code!=200){
-                    runOnUiThread {
-                        this@MainActivity.showToast(error)
-                    }
-                    L.i(tag,"code: $code")
-                }else{
-                    val productsJson = body.getJSONArray("data")
-                    val type = object : TypeToken<List<T>>(){}.type
-                    assign(gson.fromJson(productsJson.toString(),type))
-                }
+                L.i(tag,"code: $code")
+            }else{
+                val productsJson = body.getJSONArray("data")
+                val type = object : TypeToken<List<T>>(){}.type
+                L.d(tag,productsJson.toString())
+                L.d(tag,"service json:"+productsJson.getJSONObject(0).getString("serviceJson"))
+                assign(gson.fromJson(productsJson.toString(),type))
             }
         })
     }
@@ -70,10 +69,21 @@ class MainActivity : BaseActivity() {
         if(debug){
             viewModel.assets = assetStub()
         }else{
-            getDataBase<Asset>(viewModel.token,"无法获取资产数据","获取资产数据失败") {
-                    data -> viewModel.assets = data
+            Http.purchaseHistory(viewModel.token,{response ->
+                val body = JSONObject(response.body!!.string())
+                val code = body.getInt("code")
+                if(code!=200){
+                    runOnUiThread {
+                        this@MainActivity.showToast("获取资产数据失败")
+                    }
+                    L.i(tag,"code: $code")
+                }else{
+                    val productsJson = body.getJSONArray("data")
+                    val type = object : TypeToken<List<Asset>>(){}.type
+                    viewModel.assets = gson.fromJson(productsJson.toString(),type)
                     callback()
-            }
+                }
+            })
         }
     }
 
@@ -81,8 +91,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initialization()
-        setMainFragment()
         navViewSetting()
+        setMainFragment()
     }
 
     override fun onDestroy() {
@@ -111,8 +121,14 @@ class MainActivity : BaseActivity() {
             viewModel.token = it.getStringExtra("token")!!
             viewModel.user = gson.fromJson(it.getStringExtra("user"),User::class.java)
         }
-        updateAllProducts(true)
-        updateAssets(true)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                result -> if (result.resultCode == Activity.RESULT_OK){
+                    val cost = result.data?.getIntExtra("cost",0)?:0
+                    viewModel.user.balance -= cost
+            }
+        }
+        updateAllProducts()
+        updateAssets()
     }
     private fun setMainFragment(){
         val trans = supportFragmentManager.beginTransaction()
@@ -139,7 +155,7 @@ class MainActivity : BaseActivity() {
                 }
                 R.id.navigation_dashboard -> {
                     L.d(tag,"Jump to dashboard")
-                    navigation(AssetFragment.newInstance(viewModel.assets))
+                    navigation(AssetFragment.newInstance(viewModel.assets,viewModel.user.balance))
                     L.d(tag,"goto asset")
                 }
                 R.id.navigation_person -> {

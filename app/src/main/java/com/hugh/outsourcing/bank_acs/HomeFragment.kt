@@ -53,11 +53,9 @@ class HomeFragment(private val items:List<Product>) : Fragment() {
         }
 
         binding.swiper.setOnRefreshListener {
-            (activity as MainActivity?)?.let {
-                it.updateAllProducts {
-                    binding.items.adapter?.notifyDataSetChanged()
-                }
-            }
+            (activity as MainActivity).updateAllProducts()
+            binding.items.adapter?.notifyDataSetChanged()
+            binding.swiper.isRefreshing = false
         }
     }
 }

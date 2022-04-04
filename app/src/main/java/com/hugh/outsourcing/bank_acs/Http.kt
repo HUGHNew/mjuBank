@@ -5,10 +5,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.concurrent.thread
 
 object Http {
     // region paths
     private const val ip="http://150.158.77.38:12345"
+//    private const val ip="http://192.168.43.152:8444"
     private const val all_prods = "/product/allProducts"
     private const val purchase = "/product/purchase"
     private const val loginPath = "/user/login"
@@ -29,7 +31,7 @@ object Http {
         httpd.newCall(req).enqueue(this)
     // region directly API
 //    TODO API changed
-    fun getAllProducts(token:String,callback: Callback){
+    fun getAllProductsAsync(token:String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(url(all_prods))
@@ -37,7 +39,24 @@ object Http {
                 .build()
         )
     }
-    fun getProduct(id: String,token:String,callback: Callback){
+    fun getAllProducts(token:String,
+                       then: (response: Response)->Unit={},
+                       error: ()->Unit={}){
+        val request = tokenBuilder(token)
+            .url(url(all_prods))
+            .get()
+            .build()
+        thread {
+            httpd.newCall(request).execute().use {
+                if(it.isSuccessful){
+                    then(it)
+                }else{
+                    error()
+                }
+            }
+        }.join()
+    }
+    fun getProductAsync(id: String,token:String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(url(product(id)))
@@ -45,7 +64,24 @@ object Http {
                 .build()
         )
     }
-    fun purchaseProduct(token:String, payload: RequestBody, callback: Callback){
+    fun getProduct(id: String,token:String,
+                   then: (response: Response)->Unit={},
+                   error: ()->Unit={}){
+        val request = tokenBuilder(token)
+            .url(url(product(id)))
+            .get()
+            .build()
+        thread {
+            httpd.newCall(request).execute().use {
+                if(it.isSuccessful){
+                    then(it)
+                }else{
+                    error()
+                }
+            }
+        }.join()
+    }
+    fun purchaseProductAsync(token:String, payload: RequestBody, callback: Callback){
         callback.queue(
             tokenBuilder(token)
                 .url(url(purchase))
@@ -53,13 +89,41 @@ object Http {
                 .build()
         )
     }
-    fun purchaseHistory(token: String,callback: Callback){
+    fun purchaseProduct(token:String, payload: RequestBody,
+                        then: (response: Response)->Unit={},
+                        error: ()->Unit={}){
+        thread {
+            httpd.newCall(tokenBuilder(token)
+                .url(url(purchase))
+                .put(payload)
+                .build()).execute().use {
+                if (it.isSuccessful) {
+                    then(it)
+                }else{error()}
+            }
+        }.join()
+    }
+    fun purchaseHistoryAsync(token: String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
-                .url(history)
+                .url(url(history))
                 .get()
                 .build()
         )
+    }
+    fun purchaseHistory(token: String,
+                        then: (response: Response)->Unit={},
+                        error: ()->Unit={}){
+        thread {
+            httpd.newCall(tokenBuilder(token)
+                .url(url(history))
+                .get()
+                .build()).execute().use {
+                    if(it.isSuccessful){
+                        then(it)
+                    }else{error()}
+            }
+        }.join()
     }
     fun login(payload: RequestBody, callback: Callback){
         callback.queue(
@@ -72,7 +136,7 @@ object Http {
     }
     fun logout(token:String){
         tokenBuilder(token)
-            .url(logoutPath)
+            .url(url(logoutPath))
             .get()
             .build()
     }

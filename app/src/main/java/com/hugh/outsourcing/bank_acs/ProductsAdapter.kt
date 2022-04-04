@@ -31,7 +31,9 @@ class ProductsAdapter(private val token:String,private val items:List<Product>):
                 putExtra("product",item)
                 putExtra("token",token)
             }
-            it.context.startActivity(intent)
+//            it.context.startActivity(intent)
+            val act = it.context as MainActivity
+            act.coster.launch(intent)
         }
     }
 
