@@ -1,6 +1,5 @@
 package com.hugh.outsourcing.bank_acs
 
-import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
+import com.hugh.outsourcing.bank_acs.service.Product
 import com.hugh.outsourcing.bank_acs.vms.HomeViewModel
 
-class HomeFragment(private val items:List<Pair<String,String>>) : Fragment() {
+class HomeFragment(private val items:List<Product>) : Fragment() {
     companion object {
-        fun newInstance(args:List<Pair<String,String>>):HomeFragment{
+        fun newInstance(args:List<Product>):HomeFragment{
             return HomeFragment(args)
         }
         const val Tag = "HomeFragment"
@@ -32,10 +32,6 @@ class HomeFragment(private val items:List<Pair<String,String>>) : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkLoginStatus()
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -52,15 +48,16 @@ class HomeFragment(private val items:List<Pair<String,String>>) : Fragment() {
         context?.let {
             binding.items.apply {
                 layoutManager = LinearLayoutManager(it)
-                adapter = ListItemAdapter(items)
+                adapter = ProductsAdapter((activity as MainActivity).getToken(),items)
             }
         }
-        checkLoginStatus()
-        binding.loginButton.setOnClickListener {
-            startActivity(Intent(context,LoginActivity::class.java))
+
+        binding.swiper.setOnRefreshListener {
+            (activity as MainActivity?)?.let {
+                it.updateAllProducts {
+                    binding.items.adapter?.notifyDataSetChanged()
+                }
+            }
         }
-    }
-    private fun checkLoginStatus(){
-        binding.loginButton.visibility= View.INVISIBLE
     }
 }

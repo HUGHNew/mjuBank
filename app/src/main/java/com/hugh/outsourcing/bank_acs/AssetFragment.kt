@@ -8,12 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
+import com.hugh.outsourcing.bank_acs.service.Asset
 import com.hugh.outsourcing.bank_acs.vms.AssetViewModel
 
-class AssetFragment(private val assets:List<Pair<String,String>>) : Fragment() {
+class AssetFragment(private val assets:List<Asset>) : Fragment() {
 
     companion object {
-        fun newInstance(items:List<Pair<String,String>>) = AssetFragment(items)
+        fun newInstance(items:List<Asset>) = AssetFragment(items)
     }
 
     private lateinit var viewModel: AssetViewModel
@@ -42,7 +43,14 @@ class AssetFragment(private val assets:List<Pair<String,String>>) : Fragment() {
         context?.let {
             binding.assetItems.apply {
                 layoutManager = LinearLayoutManager(it)
-                adapter = ListItemAdapter(assets)
+                adapter = AssetsAdapter(assets)
+            }
+        }
+        binding.swiper.setOnRefreshListener {
+            (activity as MainActivity?)?.let {
+                it.updateAssets {
+                    binding.assetItems.adapter?.notifyDataSetChanged()
+                }
             }
         }
     }

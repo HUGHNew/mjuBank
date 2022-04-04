@@ -29,12 +29,6 @@ class MainActivity : BaseActivity() {
         @SuppressLint("StaticFieldLeak")
         var mMainContext: Context? = null
         val gson = com.google.gson.Gson()
-        // region legacy
-        enum class LoginStatus{
-            NO,UNREAL,FULL
-        }
-        var status = LoginStatus.NO
-        // endregion
     }
     // region get data
     private fun <T> getDataBase(token:String, failure:String, error:String,
@@ -51,9 +45,9 @@ class MainActivity : BaseActivity() {
                 val code = body.getInt("code")
                 if(code!=200){
                     runOnUiThread {
-                        L.i(tag,"code: $code")
+                        this@MainActivity.showToast(error)
                     }
-                    this@MainActivity.showToast(error)
+                    L.i(tag,"code: $code")
                 }else{
                     val productsJson = body.getJSONArray("data")
                     val type = object : TypeToken<List<T>>(){}.type
@@ -62,21 +56,23 @@ class MainActivity : BaseActivity() {
             }
         })
     }
-    private fun getAllProducts(debug:Boolean = false){
+    fun updateAllProducts(debug:Boolean = false, callback:()->Unit={}){
         if(debug){
             viewModel.products = productStub()
         }else{
             getDataBase<Product>(viewModel.token,"无法获取产品数据","获取产品数据失败"){
                     data -> viewModel.products = data
+                    callback()
             }
         }
     }
-    private fun getAssets(debug: Boolean = false){
+    fun updateAssets(debug: Boolean = false, callback:()->Unit={}){
         if(debug){
             viewModel.assets = assetStub()
         }else{
             getDataBase<Asset>(viewModel.token,"无法获取资产数据","获取资产数据失败") {
                     data -> viewModel.assets = data
+                    callback()
             }
         }
     }
@@ -88,7 +84,16 @@ class MainActivity : BaseActivity() {
         setMainFragment()
         navViewSetting()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            Http.logout(viewModel.token)
+        }catch (ignored:UninitializedPropertyAccessException){}
+        // avoid error if not login
+    }
     // region viewModel Functions
+    fun getToken():String = viewModel.token
     fun getProduct(id:String):Product{
         return viewModel.products.find { it.id == id }!!
     }
@@ -106,12 +111,12 @@ class MainActivity : BaseActivity() {
             viewModel.token = it.getStringExtra("token")!!
             viewModel.user = gson.fromJson(it.getStringExtra("user"),User::class.java)
         }
-        getAllProducts(true)
-        getAssets(true)
+        updateAllProducts(true)
+        updateAssets(true)
     }
     private fun setMainFragment(){
         val trans = supportFragmentManager.beginTransaction()
-        trans.add(R.id.frame,HomeFragment.newInstance(viewModel.products.map { it.simplify() }))
+        trans.add(R.id.frame,HomeFragment.newInstance(viewModel.products))
         trans.commit()
     }
     private fun navigation(fragment:Fragment){
@@ -129,12 +134,12 @@ class MainActivity : BaseActivity() {
             }
             when(it.itemId){
                 R.id.navigation_home -> {
-                    navigation(HomeFragment.newInstance(viewModel.products.map { that -> that.simplify() }))
+                    navigation(HomeFragment.newInstance(viewModel.products))
                     L.d(tag,"goto home")
                 }
                 R.id.navigation_dashboard -> {
                     L.d(tag,"Jump to dashboard")
-                    navigation(AssetFragment.newInstance(viewModel.assets.map { that -> that.simplify() }))
+                    navigation(AssetFragment.newInstance(viewModel.assets))
                     L.d(tag,"goto asset")
                 }
                 R.id.navigation_person -> {

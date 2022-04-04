@@ -3,6 +3,7 @@ package com.hugh.outsourcing.bank_acs
 import android.app.Activity
 import android.app.KeyguardManager
 import android.content.Context
+import android.view.Gravity
 import android.widget.Toast
 import androidx.core.content.edit
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,11 +20,13 @@ fun BaseActivity.startPasswdValidation(title:String?=null,desc:String?=null){
     intent?.let {itt -> startActivityForResult(itt, MainActivity.passwd) }
 }
 
-fun Context.showToast(msg:String,longTime:Boolean = false){
+fun Context.showToast(msg:String,longTime:Boolean = false,toast_gravity: Int = Gravity.BOTTOM){
     Toast.makeText(this,msg,
         if(longTime)Toast.LENGTH_LONG
         else Toast.LENGTH_SHORT
-    ).show()
+    ).apply{
+        setGravity(toast_gravity,0,0)
+    }.show()
 }
 fun Activity.readPhone():String?{
     return with(getSharedPreferences(LoginActivity.shared,Context.MODE_PRIVATE)){

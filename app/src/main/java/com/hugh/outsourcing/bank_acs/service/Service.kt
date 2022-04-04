@@ -1,6 +1,8 @@
 package com.hugh.outsourcing.bank_acs.service
 
-class Service(val id:Int,private val params:Param?) {
+import java.io.Serializable
+
+class Service(val id:Int,private val params:Param?): Serializable {
     inner class Param(private val areas:List<String>){
         fun allow(area: String):Boolean{
             return areas.let { area in it }

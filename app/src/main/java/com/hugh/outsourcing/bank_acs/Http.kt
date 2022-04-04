@@ -12,6 +12,7 @@ object Http {
     private const val all_prods = "/product/allProducts"
     private const val purchase = "/product/purchase"
     private const val loginPath = "/user/login"
+    private const val logoutPath = "/user/logout"
     private const val history = "/product/purchaseHistory"
     private fun product(id:String) = "/product/${id}"
     private fun url(path:String) = "$ip$path"
@@ -68,6 +69,12 @@ object Http {
                 .post(payload)
                 .build()
         )
+    }
+    fun logout(token:String){
+        tokenBuilder(token)
+            .url(logoutPath)
+            .get()
+            .build()
     }
     // endregion
     // region helper functions

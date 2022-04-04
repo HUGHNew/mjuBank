@@ -1,13 +1,15 @@
 package com.hugh.outsourcing.bank_acs.service
 
 import com.hugh.outsourcing.bank_acs.*
+import java.io.Serializable
 
 
 class Product(val id:String, val name:String, val period:Int, val annual:Int,
               val minAmount:Int,val maxAmount:Int,val incAmount:Int,
               val dailyAmount:Int, val surplus:Int,val available:Boolean,
-              val serviceJson:String){
-    private val already:Int = 0
+              val serviceJson:String):Serializable{
+    private var already:Int = 0
+    private var errCode:Int = 0
     companion object{
         val errors = listOf(
             "购买金额不在范围内",
@@ -17,17 +19,13 @@ class Product(val id:String, val name:String, val period:Int, val annual:Int,
         )
         val risks = listOf("低风险","中风险","高风险")
     }
-    fun purchase(amount: Int): Boolean {
-        return when (val code = purchaseStatus(amount)){
-            0 -> {
-                // TODO send msg
-                true
-            }
-            else ->{
-                MainActivity.mMainContext?.showToast(errors[code-1])
-                false
-            }
-        }
+    fun getLastErr():String = errors[errCode-1]
+    fun purchase(amount: Int){
+        already += amount
+    }
+    fun isPurchasable(amount: Int):Boolean{
+        errCode = purchaseStatus(amount)
+        return errCode == 0
     }
     fun validate(user: User):Boolean{
         return true

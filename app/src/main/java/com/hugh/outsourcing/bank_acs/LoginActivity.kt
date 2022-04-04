@@ -87,11 +87,15 @@ class LoginActivity : BaseActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 val token = response.header("Authorization",null)
-                val body = JSONObject(response.body!!.string())
+                L.d(tag,"header code:${response}")
+                L.e(tag,token.toString())
+                val bodyStr = response.body!!.string()
+                val body = JSONObject(bodyStr)
                 val code = body.getInt("code")
+                val msg = body.getString("msg")
                 L.d(tag,"code: $code")
                 if (code != 200 || token == null){
-                    L.e(tag,response.message)
+                    L.e(tag, msg)
                     runOnUiThread{
                         this@LoginActivity.showToast("登录失败，帐号或密码错误")
                     }
@@ -99,10 +103,14 @@ class LoginActivity : BaseActivity() {
                     savePhone(binding.accountEditor.text.toString())
 //                    intentResult(token,body.get("data").toString())
                     runOnUiThread {
-                        val intent = Intent(this@LoginActivity,MainActivity::class.java)
-                        startActivity(intent,genBundle(token,body.get("data").toString()))
+                        val intent = Intent(this@LoginActivity,MainActivity::class.java).apply {
+                            putExtra("token",token)
+                            putExtra("user",body.getJSONObject("data").toString())
+                        }
+                        startActivity(intent)
                     }
                     L.d(tag,body.get("data").toString())
+                    finish()
                 }
             }
         })
