@@ -6,14 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Product
 import com.hugh.outsourcing.bank_acs.vms.HomeViewModel
 
-class HomeFragment(private val items:List<Product>) : Fragment() {
+class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
     companion object {
-        fun newInstance(args:List<Product>):HomeFragment{
+        fun newInstance(args:LiveData<List<Product>>):HomeFragment{
             return HomeFragment(args)
         }
         const val Tag = "HomeFragment"
@@ -42,19 +44,28 @@ class HomeFragment(private val items:List<Product>) : Fragment() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         // TODO: Use the ViewModel
     }
-
+    fun setAdapterData(products:List<Product>){
+        binding.items.adapter?.let { adapter ->
+            (adapter as ProductsAdapter).items = products
+            adapter.notifyDataSetChanged()
+        }
+    }
     private fun initialization(){
         L.d(Tag,"load data to recycler")
         context?.let {
             binding.items.apply {
                 layoutManager = LinearLayoutManager(it)
-                adapter = ProductsAdapter((activity as MainActivity).getToken(),items)
+                adapter = ProductsAdapter((activity as MainActivity).getToken(), listOf())
             }
         }
-
+        items.observe(this.requireActivity(), {
+            setAdapterData(it)
+        })
         binding.swiper.setOnRefreshListener {
-            (activity as MainActivity).updateAllProducts()
-            binding.items.adapter?.notifyDataSetChanged()
+//            binding.items.adapter?.let{ adapter ->
+//                (adapter as ProductsAdapter).items = (activity as MainActivity).updateProducts()!!
+//                adapter.notifyDataSetChanged()
+//            }
             binding.swiper.isRefreshing = false
         }
     }

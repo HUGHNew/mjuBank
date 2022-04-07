@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hugh.outsourcing.bank_acs.service.Product
 
-class ProductsAdapter(private val token:String,private val items:List<Product>):
+class ProductsAdapter(private val token:String,var items:List<Product>):
     RecyclerView.Adapter<ProductsAdapter.ViewHolder>(){
         inner  class ViewHolder(view: View):RecyclerView.ViewHolder(view){
             val title : TextView = view.findViewById(R.id.title)

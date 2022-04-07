@@ -7,8 +7,8 @@ import kotlin.math.max
 
 class Product(val id:String, val name:String, val period:Int, val annual:Int,
               val minAmount:Int,val maxAmount:Int,val incAmount:Int,
-              val dailyAmount:Int, val surplus:Int,val available:Boolean,
-              val serviceJson:String):Serializable{
+              val dailyAmount:Int, val surplus:Int,
+              val showInterest:Boolean = false,val clientCheck:Boolean = false):Serializable{
     private var already:Int = 0
     private var errCode:Int = 0
     companion object{
@@ -33,7 +33,6 @@ class Product(val id:String, val name:String, val period:Int, val annual:Int,
     }
     private fun purchaseStatus(amount: Int):Int{
         L.d("Purchase","$amount $minAmount-$maxAmount~$incAmount")
-        if(!available)return 4
         if(amount !in minAmount..maxAmount)return 1
         if(amount + already > dailyAmount)return 2
         if((amount-minAmount) % incAmount != 0)return 3

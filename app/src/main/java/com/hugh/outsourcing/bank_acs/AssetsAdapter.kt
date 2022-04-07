@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hugh.outsourcing.bank_acs.service.Asset
 
-class AssetsAdapter(private val items:List<Asset>):
+class AssetsAdapter(var items:List<Asset>):
     RecyclerView.Adapter<AssetsAdapter.ViewHolder>(){
     inner  class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         val title : TextView = view.findViewById(R.id.title)

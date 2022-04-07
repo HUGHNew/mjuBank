@@ -14,7 +14,7 @@ import com.hugh.outsourcing.bank_acs.service.Asset
 //}
 fun productStub(): List<Product> {
     return List(20){
-        Product((1000..2000).random().toString(),"存款",(0..365).random(),0,0,100,1,1000,10,false,"")
+        Product((1000..2000).random().toString(),"存款",(0..365).random(),0,0,100,1,1000,10,false,true)
     }
 }
 fun assetStub(): List<Asset>{
