@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Asset
@@ -40,26 +41,26 @@ class AssetFragment(private val assets: LiveData<List<Asset>>, private val balan
         viewModel = ViewModelProvider(this)[AssetViewModel::class.java]
         // TODO: Use the ViewModel
     }
+    fun setAdapter(items:List<Asset>){
+        binding.assetItems.adapter?.let { adapter ->
+            (adapter as AssetsAdapter).items = items
+            adapter.notifyDataSetChanged()
+        }
+    }
     private fun initialization() {
         context?.let {
             binding.assetItems.apply {
                 layoutManager = LinearLayoutManager(it)
                 adapter = AssetsAdapter(assets.value!!)
+                addItemDecoration(DividerItemDecoration(this.context,DividerItemDecoration.VERTICAL))
             }
         }
         binding.assetShow.text = "资产: $balance"
-//        assets.observe(this.requireActivity(),{
-//            binding.assetItems.adapter?.let { adapter ->
-////              (adapter as AssetsAdapter).items = it
-//                adapter.notifyDataSetChanged()
-//            }
-//        })
+        assets.observe(this.requireActivity(),{
+            setAdapter(it)
+        })
         binding.swiper.setOnRefreshListener {
-            binding.assetItems.adapter?.let { adapter ->
-                (adapter as AssetsAdapter).items = (activity as MainActivity).updateAssets()!!
-                adapter.notifyDataSetChanged()
-                binding.swiper.isRefreshing = false
-            }
+            binding.swiper.isRefreshing = false
         }
     }
 }

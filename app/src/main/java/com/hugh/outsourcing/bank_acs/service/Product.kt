@@ -2,10 +2,9 @@ package com.hugh.outsourcing.bank_acs.service
 
 import com.hugh.outsourcing.bank_acs.*
 import java.io.Serializable
-import kotlin.math.max
 
 
-class Product(val id:String, val name:String, val period:Int, val annual:Int,
+class Product(val id:String, val name:String, val period:Int, val annualRate:Int,
               val minAmount:Int,val maxAmount:Int,val incAmount:Int,
               val dailyAmount:Int, val surplus:Int,
               val showInterest:Boolean = false,val clientCheck:Boolean = false):Serializable{

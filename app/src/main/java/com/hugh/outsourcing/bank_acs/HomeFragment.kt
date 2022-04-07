@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Product
@@ -44,7 +44,7 @@ class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         // TODO: Use the ViewModel
     }
-    fun setAdapterData(products:List<Product>){
+    private fun setAdapterData(products:List<Product>){
         binding.items.adapter?.let { adapter ->
             (adapter as ProductsAdapter).items = products
             adapter.notifyDataSetChanged()
@@ -56,16 +56,16 @@ class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
             binding.items.apply {
                 layoutManager = LinearLayoutManager(it)
                 adapter = ProductsAdapter((activity as MainActivity).getToken(), listOf())
+                addItemDecoration(
+                    DividerItemDecoration(this.context,
+                        DividerItemDecoration.VERTICAL)
+                )
             }
         }
         items.observe(this.requireActivity(), {
             setAdapterData(it)
         })
         binding.swiper.setOnRefreshListener {
-//            binding.items.adapter?.let{ adapter ->
-//                (adapter as ProductsAdapter).items = (activity as MainActivity).updateProducts()!!
-//                adapter.notifyDataSetChanged()
-//            }
             binding.swiper.isRefreshing = false
         }
     }

@@ -24,15 +24,25 @@
     <string name="asset_show">资产:</string>
     <string name="asset_purchased">已购买产品</string>
 
-    <string name="detail_header_title">化利率</string>
+    <string name="detail_header_title">年化利率</string>
     <string name="detail_header_prod">产品名称</string>
     <string name="detail_header_risk">风险等级</string>
-    <string name="detail_header_cal">结算方式</string>
+    <string name="detail_header_min">起存金额</string>
+    <string name="detail_header_inc">最小增加金额</string>
 
     <string name="detail_due_date">到期日：</string>
     <string name="detail_purchase_hint">购买金额(最低-最高)</string>
     <string name="detail_confirm">确定</string>
 
     <string name="dialog_amount">金额: %1$d</string>
-    <string name="dialog_due">%1$s到期</string>
+    <string name="dialog_due">%1$s购买</string>
+
+    <string name="product_amount">每日最高可购买：￥</string>
+    <string name="product_rate">年利率：</string>
+    <string name="product_suffix">%</string>
+
+    <string name="asset_due">到期时间：</string>
+    <string name="asset_amount">购买金额：</string>
+    <string name="asset_amount_suffix">元</string>
+    <string name="user_hero">user hero</string>
 </resources>
