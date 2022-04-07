@@ -9,8 +9,8 @@ import kotlin.concurrent.thread
 
 object Http {
     // region paths
-//    private const val ip="http://150.158.77.38:12345"
-    private const val ip="http://192.168.3.37:12345"
+    private const val ip="http://150.158.77.38:12345"
+//    private const val ip="http://192.168.3.37:12345"
 //    private const val ip="http://192.168.43.152:8444"
     private const val all_prods = "/product/allProducts"
     private const val purchase = "/product/purchase"
