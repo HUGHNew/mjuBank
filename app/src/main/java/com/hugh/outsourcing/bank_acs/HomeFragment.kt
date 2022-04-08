@@ -13,7 +13,7 @@ import com.hugh.outsourcing.bank_acs.databinding.HomeFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Product
 import com.hugh.outsourcing.bank_acs.vms.HomeViewModel
 
-class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
+class HomeFragment(private val items: LiveData<List<Product>>) : Fragment() {
     companion object {
         fun newInstance(args:LiveData<List<Product>>):HomeFragment{
             return HomeFragment(args)
@@ -30,8 +30,12 @@ class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = HomeFragmentBinding.inflate(layoutInflater,container, false)
-        initialization()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initialization()
     }
 
     override fun onDestroyView() {
@@ -66,6 +70,9 @@ class HomeFragment(private val items:LiveData<List<Product>>) : Fragment() {
             setAdapterData(it)
         })
         binding.swiper.setOnRefreshListener {
+            (requireActivity() as MainActivity).updateProducts {
+                L.d(MainActivity.tag,"in HomeFragment Force to Update Products")
+            }
             binding.swiper.isRefreshing = false
         }
     }

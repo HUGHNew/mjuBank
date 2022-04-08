@@ -14,7 +14,7 @@ import com.hugh.outsourcing.bank_acs.service.User
 import org.json.JSONObject
 
 class MainViewModel : ViewModel() {
-    private val __products = MutableLiveData<List<Product>>()
+    val __products = MutableLiveData<List<Product>>()
     val products:LiveData<List<Product>>
         get() = __products
 //    var products:List<Product>
@@ -60,7 +60,7 @@ class MainViewModel : ViewModel() {
                 val type = object : TypeToken<List<Asset>>(){}.type
                 result = Gson().fromJson(assetsJson.toString(),type)
                 __assets.postValue(result)
-                msg = "成功获取资产数据:${__assets.value?.size}"
+                msg = "成功获取资产数据:${result.size}"
             }
             callback(msg)
         })

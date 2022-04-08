@@ -22,10 +22,16 @@ class MainActivity : BaseActivity() {
         L.d(tag,"finish purchase ${result.data?.toString()}")
         when(result.resultCode){
             Activity.RESULT_OK ->{
-                val cost = result.data?.getIntExtra("cost",1)?:-1
+                val cost = result.data?.getIntExtra("cost",0)?:0
                 L.d(tag,"it should cost $cost")
                 viewModel.user.balance -= cost
+                updateAssets{
+                    L.d(tag,"update assets after purchase")
+                }
             }
+        }
+        updateProducts{
+            L.d(tag,"update products after start a detail")
         }
     }
     private var current = R.id.navigation_home
@@ -92,6 +98,16 @@ class MainActivity : BaseActivity() {
         }
         L.e(tag,"products:${viewModel.products.value?.size}\tassets:${viewModel.assets.value?.size}")
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        navigation(when(current){
+//            R.id.navigation_home -> HomeFragment.newInstance(viewModel.products)
+//            R.id.navigation_dashboard -> AssetFragment.newInstance(viewModel.assets,viewModel.user.balance)
+//            R.id.navigation_person -> UserFragment.newInstance(viewModel.user.toPerson())
+//            else -> HomeFragment.newInstance(viewModel.products)
+//        })
+//    }
     private fun setMainFragment(){
         val trans = supportFragmentManager.beginTransaction()
         val home = HomeFragment.newInstance(viewModel.products)
