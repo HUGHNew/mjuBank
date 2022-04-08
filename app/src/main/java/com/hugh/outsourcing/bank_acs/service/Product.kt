@@ -1,5 +1,6 @@
 package com.hugh.outsourcing.bank_acs.service
 
+import com.google.gson.Gson
 import com.hugh.outsourcing.bank_acs.*
 import java.io.Serializable
 
@@ -17,7 +18,6 @@ class Product(val id:String, val name:String, val period:Int, val annualRate:Int
             "当前金额不规范,请注意起增金额",
             "当前产品不可购买"
         )
-        val risks = listOf("低风险","中风险","高风险")
     }
     fun getLastErr():String = errors[errCode-1]
     fun purchase(amount: Int){
@@ -36,5 +36,9 @@ class Product(val id:String, val name:String, val period:Int, val annualRate:Int
         if(amount + already > dailyAmount)return 2
         if((amount-minAmount) % incAmount != 0)return 3
         return 0
+    }
+
+    override fun toString(): String {
+        return Gson().toJson(this)
     }
 }

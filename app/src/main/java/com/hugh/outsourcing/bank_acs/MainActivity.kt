@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.hugh.outsourcing.bank_acs.vms.MainViewModel
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
+    private var backPressTime:Long = 0
     val coster = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         L.d(tag,"finish purchase ${result.data?.toString()}")
         when(result.resultCode){
@@ -27,10 +29,9 @@ class MainActivity : BaseActivity() {
         }
     }
     private var current = R.id.navigation_home
-    var initProducts:List<Product> =listOf()
     companion object{
         const val tag = "MainActivity"
-        const val passwd = 1
+        const val ExitGap:Long = 2000 // millisecond
         // promise use this obj when MainActivity alive
         @SuppressLint("StaticFieldLeak")
         var mMainContext: Context? = null
@@ -54,10 +55,22 @@ class MainActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        L.d(tag,"logout now")
         try {
-            Http.logout(viewModel.token)
+            Http.logout(viewModel.token,{response ->
+                L.d(tag,"logout: $response body: ${response.body!!.string()}")
+            })
         }catch (ignored:UninitializedPropertyAccessException){}
         // avoid error if not login
+    }
+
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() - backPressTime < ExitGap){
+            super.onBackPressed()
+        }else{
+            showToast("再按一次退出", toast_gravity = Gravity.CENTER)
+            backPressTime = System.currentTimeMillis()
+        }
     }
     // region viewModel Functions
     fun getToken():String = viewModel.token
@@ -71,7 +84,7 @@ class MainActivity : BaseActivity() {
             viewModel.token = it.getStringExtra("token")!!
             viewModel.user = gson.fromJson(it.getStringExtra("user"),User::class.java)
         }
-        initProducts = updateProducts{
+        updateProducts{
             L.i(tag,"update products, msg:$it")
         }
         updateAssets{

@@ -31,7 +31,7 @@ object Http {
     private fun Callback.queue(req:Request) =
         httpd.newCall(req).enqueue(this)
     // region directly API
-//    TODO API changed
+    // region async API
     fun getAllProductsAsync(token:String,callback: Callback){
         callback.queue(
             tokenBuilder(token)
@@ -40,6 +40,31 @@ object Http {
                 .build()
         )
     }
+    fun getProductAsync(id: String,token:String,callback: Callback){
+        callback.queue(
+            tokenBuilder(token)
+                .url(url(product(id)))
+                .get()
+                .build()
+        )
+    }
+    fun purchaseProductAsync(token:String, payload: RequestBody, callback: Callback){
+        callback.queue(
+            tokenBuilder(token)
+                .url(url(purchase))
+                .put(payload)
+                .build()
+        )
+    }
+    fun purchaseHistoryAsync(token: String,callback: Callback){
+        callback.queue(
+            tokenBuilder(token)
+                .url(url(history))
+                .get()
+                .build()
+        )
+    }
+    // endregion
     fun getAllProducts(token:String,
                        then: (response: Response)->Unit={},
                        error: ()->Unit={}){
@@ -56,14 +81,6 @@ object Http {
                 }
             }
         }.join()
-    }
-    fun getProductAsync(id: String,token:String,callback: Callback){
-        callback.queue(
-            tokenBuilder(token)
-                .url(url(product(id)))
-                .get()
-                .build()
-        )
     }
     fun getProduct(id: String,token:String,
                    then: (response: Response)->Unit={},
@@ -82,14 +99,6 @@ object Http {
             }
         }.join()
     }
-    fun purchaseProductAsync(token:String, payload: RequestBody, callback: Callback){
-        callback.queue(
-            tokenBuilder(token)
-                .url(url(purchase))
-                .put(payload)
-                .build()
-        )
-    }
     fun purchaseProduct(token:String, payload: RequestBody,
                         then: (response: Response)->Unit={},
                         error: ()->Unit={}){
@@ -103,14 +112,6 @@ object Http {
                 }else{error()}
             }
         }.join()
-    }
-    fun purchaseHistoryAsync(token: String,callback: Callback){
-        callback.queue(
-            tokenBuilder(token)
-                .url(url(history))
-                .get()
-                .build()
-        )
     }
     fun purchaseHistory(token: String,
                         then: (response: Response)->Unit={},
@@ -135,11 +136,22 @@ object Http {
                 .build()
         )
     }
-    fun logout(token:String){
-        tokenBuilder(token)
-            .url(url(logoutPath))
-            .get()
-            .build()
+    fun logout(token:String,
+               then: (response: Response) -> Unit,
+                error: (msg:String) -> Unit={}){
+        thread {
+            httpd.newCall(tokenBuilder(token)
+                .url(url(logoutPath))
+                .get()
+                .build())
+                .execute().use {
+                    if(it.isSuccessful){
+                        then(it)
+                    }else{
+                        error(it.message)
+                    }
+                }
+        }.join()
     }
     // endregion
     // region helper functions

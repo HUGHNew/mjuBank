@@ -14,56 +14,62 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DetailActivity : BaseActivity() {
-    lateinit var binding: ActivityDetailBinding
+    private lateinit var binding: ActivityDetailBinding
     lateinit var product: Product
-    lateinit var token : String
+    private lateinit var token : String
+    companion object{
+        const val tag = "DetailActivity"
+    }
     private fun getCredentialIntent(title:String, desc:String): Intent {
         val mKeyGuard = getSystemService(KeyguardManager::class.java)
         return mKeyGuard.createConfirmDeviceCredentialIntent(title,desc)
     }
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        L.d("DetailActivity",it.toString())
+        L.d(tag,it.toString())
         val amount = binding.input.text.toString().toInt()
         if(it.resultCode == Activity.RESULT_OK){
-            Http.purchaseProduct(
-                token,Http.getProductPayload(product.id,amount),
-                {response ->
-                    val json = JSONObject(response.body!!.string())
-                    if (json.getInt("code") != 200){
-                        runOnUiThread {
-                            showToast(json.getString("data"), toast_gravity = Gravity.CENTER)
-                        }
-                        setBuyResult(false)
-                    }else{
-                        val data = json.getJSONObject("data")
-                        val interest = data.getDouble("interest")
-                        val due = data.getString("due")
-                        L.d("PurchaseLog","预期利息：$interest 到期时间：$due")
-                        if (product.showInterest){
-                            AlertDialog.Builder(this)
-                                .setTitle("购买成功")
-                                .setMessage("预期利息：$interest 到期时间：$due")
-                                .setPositiveButton("确定") { _, _ ->}
-                                .create()
-                                .show()
-                        }else{
-                            runOnUiThread {
-                                showToast("购买成功", toast_gravity = Gravity.CENTER)
-                            }
-                        }
-                        setBuyResult(true,amount)
-                        finish()
-                    }
-                }
-            )
+            doPurchase(amount)
         }
+    }
+    private fun doPurchase(amount:Int){
+        Http.purchaseProduct(
+            token,Http.getProductPayload(product.id,amount),
+            {response ->
+                val json = JSONObject(response.body!!.string())
+                if (json.getInt("code") != 200){
+                    runOnUiThread {
+                        showToast(json.getString("data"), toast_gravity = Gravity.CENTER)
+                    }
+                    setBuyResult(false)
+                }else{
+                    val data = json.getJSONObject("data")
+                    val interest = data.getDouble("interest")
+                    val due = data.getString("due")
+                    L.d("PurchaseLog","预期利息：$interest 到期时间：$due")
+                    if (product.showInterest){
+                        AlertDialog.Builder(this)
+                            .setTitle("购买成功")
+                            .setMessage("预期利息：$interest 到期时间：$due")
+                            .setPositiveButton("确定") { _, _ ->}
+                            .create()
+                            .show()
+                    }else{
+                        runOnUiThread {
+                            showToast("购买成功", toast_gravity = Gravity.CENTER)
+                        }
+                    }
+                    setBuyResult(true,amount)
+                    finish()
+                }
+            }
+        )
     }
     private fun setBuyResult(ok:Boolean,cost:Int = 0){
         if (ok){
             setResult(Activity.RESULT_OK,Intent().apply {
                 putExtra("cost",cost)
             })
-            L.d("DetailActivity","Cost is $cost")
+            L.d(tag,"Cost is $cost")
         }else{
             setResult(Activity.RESULT_CANCELED)
         }
@@ -92,13 +98,11 @@ class DetailActivity : BaseActivity() {
         )
         binding.input.hint = "购买金额(${product.minAmount}-${product.maxAmount})/${product.incAmount}"
         binding.confirm.setOnClickListener {
+            L.d(tag,product.toString())
             val raw = binding.input.text.toString()
-            val limit = product.dailyAmount.toString()
             if (raw == "" || raw.count { it=='.' } != 0) {
-                //|| raw.length > product.dailyAmount.toString().length||raw[0]>limit[0] //??
-                // over limit
                 runOnUiThread {
-                    showToast("购买金额不在可购买范围内", toast_gravity = Gravity.TOP)
+                    showToast("购买金额不在可购买范围内", toast_gravity = Gravity.CENTER)
                 }
                 setBuyResult(false)
             }else {
@@ -107,9 +111,10 @@ class DetailActivity : BaseActivity() {
                     if(product.clientCheck) {
                         launcher.launch(getCredentialIntent("购买产品", "身份验证"))
                     }
+                    doPurchase(amount)
                 }else {
                     runOnUiThread {
-                        showToast(product.getLastErr(), toast_gravity = Gravity.TOP)
+                        showToast(product.getLastErr(), toast_gravity = Gravity.CENTER)
                     }
                     setBuyResult(false)
                 }

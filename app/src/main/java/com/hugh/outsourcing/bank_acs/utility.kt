@@ -14,12 +14,6 @@ import com.hugh.outsourcing.bank_acs.service.User
 // region UI Partition
 fun BottomNavigationView.getItemPosition(pos : Int):Int =  menu.getItem(pos).itemId
 
-fun BaseActivity.startPasswdValidation(title:String?=null,desc:String?=null){
-    val mKeyGuard = getSystemService(KeyguardManager::class.java)
-    val intent = mKeyGuard.createConfirmDeviceCredentialIntent(title,desc)
-    intent?.let {itt -> startActivityForResult(itt, MainActivity.passwd) }
-}
-
 fun Context.showToast(msg:String,longTime:Boolean = false,toast_gravity: Int = Gravity.BOTTOM){
     Toast.makeText(this,msg,
         if(longTime)Toast.LENGTH_LONG
