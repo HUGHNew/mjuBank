@@ -31,7 +31,7 @@ class AuthActivity : BaseActivity() {
         val calendar = Calendar.getInstance()
         binding.datePicker.init(calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)){ view: DatePicker, y:Int, MoY:Int, DoM:Int ->
+            calendar.get(Calendar.DAY_OF_MONTH)){ _: DatePicker, y:Int, MoY:Int, DoM:Int ->
             year = y
             month = MoY+1
             day = DoM

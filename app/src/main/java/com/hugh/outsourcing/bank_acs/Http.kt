@@ -30,6 +30,9 @@ object Http {
             .addHeader("Authorization" , "Bearer $token")
     private fun Callback.queue(req:Request) =
         httpd.newCall(req).enqueue(this)
+    // region base
+
+    // endregion
     // region directly API
     // region async API
     fun getAllProductsAsync(token:String,callback: Callback){

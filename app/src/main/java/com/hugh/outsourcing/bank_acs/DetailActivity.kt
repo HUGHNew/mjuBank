@@ -6,7 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hugh.outsourcing.bank_acs.databinding.ActivityDetailBinding
 import com.hugh.outsourcing.bank_acs.service.Product
 import org.json.JSONObject
@@ -16,6 +17,7 @@ import java.util.*
 class DetailActivity : BaseActivity() {
     private lateinit var binding: ActivityDetailBinding
     lateinit var product: Product
+    lateinit var helper: String
     private lateinit var token : String
     companion object{
         const val tag = "DetailActivity"
@@ -31,14 +33,19 @@ class DetailActivity : BaseActivity() {
             doPurchase(amount)
         }
     }
-    private fun doPurchase(amount:Int){
-        Http.purchaseProduct(
-            token,Http.getProductPayload(product.id,amount),
+    private fun doPurchase(amount:Int, popup:Boolean = false){
+        Http.purchaseProduct(token,
+            Http.getProductPayload(product.id,amount),
             {response ->
                 val json = JSONObject(response.body!!.string())
                 if (json.getInt("code") != 200){
+                    val err = json.getString("data")
                     runOnUiThread {
-                        showToast(json.getString("data"), toast_gravity = Gravity.CENTER)
+                        if(popup){
+                            showToast(err, toast_gravity = Gravity.CENTER)
+                        }else{
+                            setInputError(err)
+                        }
                     }
                     setBuyResult(false)
                 }else{
@@ -47,15 +54,17 @@ class DetailActivity : BaseActivity() {
                     val due = data.getString("due")
                     L.d("PurchaseLog","预期利息：$interest 到期时间：$due")
                     if (product.showInterest){
-                        AlertDialog.Builder(this)
+                        MaterialAlertDialogBuilder(this)
                             .setTitle("购买成功")
                             .setMessage("预期利息：$interest 到期时间：$due")
                             .setPositiveButton("确定") { _, _ ->}
                             .create()
                             .show()
                     }else{
-                        runOnUiThread {
-                            showToast("购买成功", toast_gravity = Gravity.CENTER)
+                        if(popup){
+                            runOnUiThread {
+                                showToast("购买成功", toast_gravity = Gravity.CENTER)
+                            }
                         }
                     }
                     setBuyResult(true,amount)
@@ -80,7 +89,10 @@ class DetailActivity : BaseActivity() {
         setContentView(binding.root)
         initialization()
     }
-
+    private fun setInputError(err:String){
+        binding.inputLay.error = err
+        binding.inputLay.helperText = null
+    }
     private fun initialization(){
         when(intent.getIntExtra("type",0)){
             0 ->{ // product
@@ -92,17 +104,29 @@ class DetailActivity : BaseActivity() {
                 binding.buyAmount.text = product.dailyAmount.toString()
             }
         }
+
+        helper = String.format(
+            resources.getString(R.string.detail_helper),
+            product.minAmount,product.maxAmount,product.incAmount
+        )
+        binding.inputLay.helperText = helper
+        binding.input.addTextChangedListener {
+            if (binding.inputLay.error!=null){
+                binding.inputLay.error = null
+                binding.inputLay.helperText = helper
+            }
+        }
         val dayOfSeconds: Long = 1000*60*60*24
         binding.dueDate.text = SimpleDateFormat("yyyy-MM-dd",Locale.CHINA).format(
             Date(System.currentTimeMillis()+product.period*(dayOfSeconds))
         )
-        binding.input.hint = "购买金额(${product.minAmount}-${product.maxAmount})/${product.incAmount}"
         binding.confirm.setOnClickListener {
             L.d(tag,product.toString())
             val raw = binding.input.text.toString()
             if (raw == "" || raw.count { it=='.' } != 0) {
                 runOnUiThread {
                     showToast("购买金额不在可购买范围内", toast_gravity = Gravity.CENTER)
+                    setInputError("购买金额不在可购买范围内")
                 }
                 setBuyResult(false)
             }else {
@@ -115,6 +139,7 @@ class DetailActivity : BaseActivity() {
                 }else {
                     runOnUiThread {
                         showToast(product.getLastErr(), toast_gravity = Gravity.CENTER)
+                        setInputError(product.getLastErr())
                     }
                     setBuyResult(false)
                 }

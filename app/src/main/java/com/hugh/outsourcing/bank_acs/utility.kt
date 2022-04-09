@@ -33,9 +33,3 @@ fun Activity.savePhone(number:String){
     }
 }
 // endregion
-
-// region classes
-fun User.toPerson():Person = Person(name,validity)
-fun Product.simplify():Pair<String,String> = name to surplus.toString()
-fun Asset.simplify():Pair<String,String> = productName to purchaseDate
-// endregion

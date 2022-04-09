@@ -5,61 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
-    <TextView
-        android:id="@+id/account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/account_headline"
-        app:layout_constraintStart_toStartOf="parent"
-
-        android:layout_marginStart="@dimen/field_start_margin"
-        android:textSize="@dimen/font_size"
-        android:text="@string/login_account"/>
-
-    <TextView
-        android:id="@+id/passwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="@dimen/field_start_margin"
-        android:layout_marginTop="@dimen/field_start_margin"
-
-        android:text="@string/login_passwd"
-        android:textSize="@dimen/font_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/account" />
-
-    <EditText
-        android:id="@+id/account_editor"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/account_editor_lay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
+        android:layout_marginEnd="@dimen/field_start_margin"
         android:hint="@string/login_account_hint"
-        android:autofillHints="phone"
-        android:gravity="center"
 
-        android:inputType="phone"
-        android:layout_marginEnd="@dimen/field_start_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/account"
-        app:layout_constraintTop_toTopOf="@id/account" />
-    <EditText
-        android:id="@+id/passwd_editor"
+        android:layout_marginStart="@dimen/field_start_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account_headline"
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/account_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:autofillHints="phone"
+            android:inputType="phone" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwd_editor_lay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
-        android:hint="@string/login_passwd_hint"
-        android:autofillHints="password"
-        android:gravity="center"
-
-        android:inputType="textPassword"
         android:layout_marginEnd="@dimen/field_start_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/passwd"
+        android:hint="@string/login_passwd_hint"
+        app:endIconMode="password_toggle"
+
+        android:layout_marginTop="@dimen/field_start_margin"
+        android:layout_marginStart="@dimen/field_start_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/passwd"
-        app:layout_constraintTop_toTopOf="@id/passwd"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account_editor_lay"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwd_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:autofillHints="password"
+
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/protocol"
@@ -72,15 +63,17 @@
         android:layout_marginStart="@dimen/field_start_margin"
         app:layout_constraintEnd_toStartOf="@id/vert_half"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwd" />
-    <Button
+        app:layout_constraintTop_toBottomOf="@id/passwd_editor_lay" />
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_round"
         android:textSize="@dimen/font_size"
         android:text="@string/login_button"
         android:layout_marginTop="@dimen/field_start_margin"
+        app:cornerRadius="25dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp"
         app:layout_constraintTop_toBottomOf="@id/protocol"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

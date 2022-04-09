@@ -1,11 +1,15 @@
-package com.hugh.outsourcing.bank_acs
+package com.hugh.outsourcing.bank_acs.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hugh.outsourcing.bank_acs.MainActivity
+import com.hugh.outsourcing.bank_acs.R
 import com.hugh.outsourcing.bank_acs.service.Asset
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,12 +38,11 @@ class AssetsAdapter(var items:List<Asset>):
         holder.dueDate.text = item.purchaseDate
         holder.itemView.setOnClickListener {
             // todo dialog for asset
-            val ctx = MainActivity.mMainContext!!
-            AlertDialog.Builder(holder.itemView.context)
+            MaterialAlertDialogBuilder(holder.itemView.context)
                 .setTitle(item.productName)
-                .setMessage("购买金额:${item.amount}\n到期时间:${item.purchaseDate}")
+                .setMessage("购买金额:${item.amount}元\n到期时间:${item.purchaseDate}")
                 .setPositiveButton("确定"){
-                    _,_ ->
+                        _,_ ->
                 }
                 .create()
                 .show()

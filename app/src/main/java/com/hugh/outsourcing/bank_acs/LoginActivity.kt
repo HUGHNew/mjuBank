@@ -97,7 +97,9 @@ class LoginActivity : BaseActivity() {
                 if (code != 200 || token == null){
                     L.e(tag, msg)
                     runOnUiThread{
-                        this@LoginActivity.showToast("登录失败，帐号或密码错误")
+                        this@LoginActivity.showToast(
+                            if(code == 401){"重复登录"}
+                            else "登录失败，帐号或密码错误")
                     }
                 }else{
                     savePhone(binding.accountEditor.text.toString())

@@ -10,6 +10,7 @@ open class BaseActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ++activityCount
+        L.e("BaseActivity","Create a new activity ${this.componentName.shortClassName}")
         supportActionBar?.hide()
     }
 

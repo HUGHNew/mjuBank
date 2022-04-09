@@ -5,13 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AssetFragment">
+    tools:context=".fragments.AssetFragment">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/asset_show"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_round"
+
+        app:cornerRadius="15dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp"
+
+
         android:layout_marginTop="@dimen/activity_margin"
         android:layout_marginStart="@dimen/field_start_margin"
         android:layout_marginEnd="@dimen/field_start_margin"

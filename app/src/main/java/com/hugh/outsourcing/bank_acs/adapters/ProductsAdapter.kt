@@ -1,4 +1,4 @@
-package com.hugh.outsourcing.bank_acs
+package com.hugh.outsourcing.bank_acs.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.hugh.outsourcing.bank_acs.DetailActivity
+import com.hugh.outsourcing.bank_acs.MainActivity
+import com.hugh.outsourcing.bank_acs.R
 import com.hugh.outsourcing.bank_acs.service.Product
 
 class ProductsAdapter(private val token:String,var items:List<Product>):
@@ -26,7 +29,7 @@ class ProductsAdapter(private val token:String,var items:List<Product>):
         holder.title.text = item.name
         holder.rate.text = (item.annualRate/100.0).toString()
         holder.itemView.setOnClickListener {
-            val intent = Intent(it.context,DetailActivity::class.java).apply {
+            val intent = Intent(it.context, DetailActivity::class.java).apply {
                 putExtra("type",0) // product
                 putExtra("product",item)
                 putExtra("token",token)

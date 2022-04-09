@@ -1,22 +1,22 @@
-package com.hugh.outsourcing.bank_acs
+package com.hugh.outsourcing.bank_acs.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hugh.outsourcing.bank_acs.adapters.AssetsAdapter
 import com.hugh.outsourcing.bank_acs.databinding.AssetFragmentBinding
 import com.hugh.outsourcing.bank_acs.service.Asset
 import com.hugh.outsourcing.bank_acs.vms.AssetViewModel
 
-class AssetFragment(private val assets: LiveData<List<Asset>>, private val balance:Int) : Fragment() {
+class AssetFragment(private val token: String, private val balance:Int) : Fragment() {
 
     companion object {
-        fun newInstance(items:LiveData<List<Asset>>,balance:Int) = AssetFragment(items,balance)
+        fun newInstance(token:String,balance:Int) = AssetFragment(token, balance)
     }
 
     private lateinit var viewModel: AssetViewModel
@@ -27,21 +27,20 @@ class AssetFragment(private val assets: LiveData<List<Asset>>, private val balan
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = AssetFragmentBinding.inflate(layoutInflater,container,false)
-        initialization()
+        _binding = AssetFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[AssetViewModel::class.java]
+        initialization()
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this)[AssetViewModel::class.java]
-        // TODO: Use the ViewModel
-    }
-    fun setAdapter(items:List<Asset>){
+
+    private fun setAdapter(items:List<Asset>){
         binding.assetItems.adapter?.let { adapter ->
             (adapter as AssetsAdapter).items = items
             adapter.notifyDataSetChanged()
@@ -51,12 +50,17 @@ class AssetFragment(private val assets: LiveData<List<Asset>>, private val balan
         context?.let {
             binding.assetItems.apply {
                 layoutManager = LinearLayoutManager(it)
-                adapter = AssetsAdapter(assets.value!!)
-                addItemDecoration(DividerItemDecoration(this.context,DividerItemDecoration.VERTICAL))
+                adapter = AssetsAdapter(viewModel.updateAssets(token) {})
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
             }
         }
         binding.assetShow.text = "资产: $balance"
-        assets.observe(this.requireActivity(),{
+        viewModel.assets.observe(this.requireActivity(),{
             setAdapter(it)
         })
         binding.swiper.setOnRefreshListener {

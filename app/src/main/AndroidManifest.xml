@@ -15,12 +15,20 @@
         android:theme="@style/Theme.MjuBank"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".PurchaseActivity"
+            android:exported="true"
+            android:label="@string/title_activity_purchase"
+            android:theme="@style/Theme.MjuBank.NoActionBar">
+
+        </activity>
+        <activity
             android:name=".SubActivity"
             android:exported="true">
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".AuthActivity"
             android:exported="false" />
@@ -37,7 +45,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:launchMode="singleTask"/>
+            android:launchMode="standard" />
     </application>
 
 </manifest>

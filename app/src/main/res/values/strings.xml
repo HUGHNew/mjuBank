@@ -31,8 +31,9 @@
     <string name="detail_header_inc">最小增加金额</string>
 
     <string name="detail_due_date">到期日：</string>
-    <string name="detail_purchase_hint">购买金额(最低-最高)</string>
+    <string name="detail_purchase_hint">购买金额</string>
     <string name="detail_confirm">确定</string>
+    <string name="detail_helper">金额: %1$d-%2$d 元 增加额度: %3$d 元</string>
 
     <string name="dialog_amount">金额: %1$d</string>
     <string name="dialog_due">%1$s购买</string>
@@ -45,4 +46,5 @@
     <string name="asset_amount">购买金额：</string>
     <string name="asset_amount_suffix">元</string>
     <string name="user_hero">user hero</string>
+    <string name="title_activity_purchase">PurchaseActivity</string>
 </resources>
