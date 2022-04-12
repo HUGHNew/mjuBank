@@ -19,19 +19,6 @@ class LoginActivity : BaseActivity() {
         const val noProtocol = "请同意协议"
     }
 
-    private fun intentResult(token:String,data:String){
-        intent.apply {
-            putExtra("token",token)
-            putExtra("user",data)
-        }
-    }
-    private fun genBundle(token:String,data:String):Bundle{
-        return Bundle().apply {
-            putString("token",token)
-            putString("user",data)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)

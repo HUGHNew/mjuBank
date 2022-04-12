@@ -3,7 +3,7 @@ package com.hugh.outsourcing.bank_acs
 import android.util.Log
 
 object L {
-    private val level = Level.Error
+    private val level = Level.Shut
     enum class Level{
         Shut,Verbose,Debug,Info,Warn,Error
     }
