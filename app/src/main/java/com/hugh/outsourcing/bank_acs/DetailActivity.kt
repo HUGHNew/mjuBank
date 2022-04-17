@@ -37,38 +37,47 @@ class DetailActivity : BaseActivity() {
         Http.purchaseProduct(token,
             Http.getProductPayload(product.id,amount),
             {response ->
-                val json = JSONObject(response.body!!.string())
-                if (json.getInt("code") != 200){
-                    val err = json.getString("data")
-                    runOnUiThread {
-                        if(popup){
-                            showToast(err, toast_gravity = Gravity.CENTER)
-                        }else{
-                            setInputError(err)
-                        }
-                    }
-                    setBuyResult(false)
-                }else{
-                    val data = json.getJSONObject("data")
-                    val interest = data.getDouble("interest")
-                    val due = data.getString("due")
-                    L.d("PurchaseLog","预期利息：$interest 到期时间：$due")
-                    if (product.showInterest){
-                        MaterialAlertDialogBuilder(this)
-                            .setTitle("购买成功")
-                            .setMessage("预期利息：$interest 到期时间：$due")
-                            .setPositiveButton("确定") { _, _ ->}
-                            .create()
-                            .show()
-                    }else{
-                        if(popup){
-                            runOnUiThread {
-                                showToast("购买成功", toast_gravity = Gravity.CENTER)
+                try {
+                    val json = JSONObject(response.body!!.string())
+                    L.d(tag,json.toString(2))
+                    if (json.getInt("code") != 200){
+                        val err = json.getString("data")
+                        runOnUiThread {
+                            if(popup){
+                                showToast(err, toast_gravity = Gravity.CENTER)
+                            }else{
+                                setInputError(err)
                             }
                         }
+                        setBuyResult(false)
+                    }else{
+                        if (product.showInterest){
+                            val data = json.getJSONObject("data")
+                            val interest = data.getDouble("interest")
+                            val due = data.getString("due")
+                            L.d(tag,"预期利息：$interest 到期时间：$due")
+                            MaterialAlertDialogBuilder(this)
+                                .setTitle("购买成功")
+                                .setMessage("预期利息：$interest 到期时间：$due")
+                                .setPositiveButton("确定") { _, _ ->}
+                                .create()
+                                .show()
+                        }else{
+                            if(popup){
+                                runOnUiThread {
+                                    showToast("购买成功", toast_gravity = Gravity.CENTER)
+                                }
+                            }
+                        }
+                        setBuyResult(true,amount)
+                        finish()
                     }
-                    setBuyResult(true,amount)
-                    finish()
+                }catch (e:Exception){
+                    // 应该到不了 就不改了
+                    runOnUiThread {
+                        showToast("购买出错:${e.message}", toast_gravity = Gravity.CENTER)
+                    }
+                    setBuyResult(false)
                 }
             }
         )

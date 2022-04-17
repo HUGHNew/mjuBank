@@ -10,12 +10,22 @@ android {
         applicationId "com.hugh.outsourcing.bank_acs"
         minSdk 24
         targetSdk 32
-        versionCode 7
-        versionName "0.5"
+        versionCode 8
+        versionName "0.5.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+    }
+
+    applicationVariants.all {variant ->
+        variant.outputs.all {output ->
+            if (variant.buildType.name == "debug") {
+                output.outputFileName = "mjuBank_debug.apk"
+            } else if (variant.buildType.name == "release") {
+                output.outputFileName = "mjuBank_release.apk"
+            }
         }
     }
 
